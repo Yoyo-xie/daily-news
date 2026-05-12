@@ -1,0 +1,24 @@
+# 输出目录（数据库、HTML 历史快照等运行时生成的内容）
+output/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# 备份
+*.bak
+*.backup
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# 日志
+*.log
