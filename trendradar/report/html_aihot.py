@@ -284,38 +284,16 @@ a { color: inherit; text-decoration: none; }
     white-space: pre-wrap;
 }
 
-/* Feed cards (time on left, card on right) */
+/* Feed cards */
 .feed { display: flex; flex-direction: column; }
 .feed-item {
     display: flex;
-    gap: 20px;
     padding: 16px 0;
     border-bottom: 1px solid var(--border-soft);
     align-items: flex-start;
 }
+.feed-item .news-card { flex: 1; min-width: 0; }
 .feed-item.hidden { display: none; }
-.feed-time {
-    flex-shrink: 0;
-    width: 70px;
-    padding-top: 16px;
-    text-align: right;
-}
-.feed-time-big {
-    font-size: 24px;
-    font-weight: 300;
-    color: var(--time-color);
-    line-height: 1;
-    letter-spacing: 0.03em;
-    font-variant-numeric: tabular-nums;
-    font-feature-settings: "tnum";
-}
-.feed-time-date {
-    font-size: 11px;
-    color: var(--text-muted);
-    font-weight: 300;
-    margin-bottom: 6px;
-    letter-spacing: 0.04em;
-}
 
 .news-card {
     flex: 1;
@@ -537,9 +515,6 @@ a { color: inherit; text-decoration: none; }
     .logo-text { font-size: 18px; }
     .main { padding: 20px 16px 60px; }
     .hero-title { font-size: 24px; }
-    .feed-item { gap: 12px; }
-    .feed-time { width: 50px; }
-    .feed-time-big { font-size: 18px; }
     .news-card { padding: 14px 16px; }
 }
 """
@@ -703,36 +678,15 @@ def _render_feed_item(
     item: Dict,
     tags: List[str],
     source_type: str,
-    now: datetime,
 ) -> str:
-    """渲染单条 feed 项：左侧时间，右侧卡片"""
+    """渲染单条 feed 项"""
     title = html_escape(item.get("title", ""))
     url = item.get("mobile_url") or item.get("url", "")
     source_name = item.get("source_name", "")
     is_new = item.get("is_new", False)
-    time_display = item.get("time_display", "")
     ranks = item.get("ranks", [])
     rank_threshold = item.get("rank_threshold", 10)
     count = item.get("count", 1)
-
-    # 解析时间显示，提取 HH:MM 和 MM-DD
-    time_big = now.strftime("%H:%M")
-    date_small = now.strftime("%m-%d")
-    if time_display:
-        cleaned = time_display.replace("[", "").replace("]", "").strip()
-        # 形如 "10:00 ~ 11:00" 取右侧最新时间
-        if "~" in cleaned:
-            cleaned = cleaned.split("~")[-1].strip()
-        # 提取 HH:MM
-        for token in cleaned.split():
-            if ":" in token and len(token) <= 5:
-                time_big = token
-                break
-        # 提取 MM-DD
-        for token in cleaned.split():
-            if "-" in token and len(token) <= 5:
-                date_small = token
-                break
 
     # 卡片头：头像 + 来源 + rank/new flags
     header_parts = []
@@ -770,10 +724,6 @@ def _render_feed_item(
 
     return f"""
     <div class="feed-item" data-type="{source_type}" data-tags="{tags_data}">
-        <div class="feed-time">
-            <div class="feed-time-date">{html_escape(date_small)}</div>
-            <div class="feed-time-big">{html_escape(time_big)}</div>
-        </div>
         <article class="news-card">
             <div class="card-header">{header_html}</div>
             <div class="card-title">{title_html}</div>
@@ -845,9 +795,9 @@ def render_html_content(
     # 渲染卡片
     card_parts = []
     for item in hot_cards_sorted:
-        card_parts.append(_render_feed_item(item, item.get("_tags", []), "hotlist", now))
+        card_parts.append(_render_feed_item(item, item.get("_tags", []), "hotlist"))
     for item in rss_cards:
-        card_parts.append(_render_feed_item(item, item.get("_tags", []), "rss", now))
+        card_parts.append(_render_feed_item(item, item.get("_tags", []), "rss"))
     feed_html = "".join(card_parts) or '<div class="empty-state">暂无内容</div>'
 
     # 失败提示
