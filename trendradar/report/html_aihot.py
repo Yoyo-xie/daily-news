@@ -742,11 +742,6 @@ def _render_feed_item(
             f'<span class="source-name">{html_escape(source_name)}</span>'
         )
 
-    if ranks:
-        rank_text = _format_rank(ranks)
-        klass = _rank_class(min(ranks), rank_threshold)
-        header_parts.append(f'<span class="rank-badge {klass}">#{rank_text}</span>')
-
     if is_new:
         header_parts.append('<span class="new-flag">NEW</span>')
 
