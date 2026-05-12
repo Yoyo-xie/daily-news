@@ -17,26 +17,54 @@ from trendradar.ai.formatter import render_ai_analysis_html_rich
 
 
 CSS = r"""
-:root {
-    --bg-primary: #0a1119;
-    --bg-secondary: #0d1525;
-    --bg-card: #131b2c;
-    --bg-card-hover: #1a2340;
-    --bg-elevated: #1f2a3f;
-    --bg-rec: rgba(255, 255, 255, 0.025);
-    --border: #1e2a3e;
-    --border-soft: #182236;
-    --text-primary: #e8ecf2;
-    --text-secondary: #a0a8b8;
-    --text-muted: #5a6478;
-    --accent: #2dd4d4;
-    --accent-dim: #1ba8a8;
-    --accent-glow: rgba(45, 212, 212, 0.15);
-    --accent-bg: rgba(45, 212, 212, 0.08);
-    --time-color: #f0f3f8;
-    --warn: #f59e0b;
-    --danger: #ef4444;
+/* 颜色对齐 aihot.virxact.com 的主题变量 */
+:root, [data-theme="dark"] {
+    --bg-primary: #060814;
+    --bg-secondary: #0b0f1a;
+    --bg-card: #111827;
+    --bg-card-hover: #1e293b;
+    --bg-elevated: #1e293b;
+    --bg-rec: rgba(255, 255, 255, 0.04);
+    --border: rgba(255, 255, 255, 0.06);
+    --border-soft: rgba(255, 255, 255, 0.04);
+    --text-primary: #f1f5f9;
+    --text-secondary: #94a3b8;
+    --text-muted: #64748b;
+    --accent: #22d3ee;
+    --accent-dim: #67e8f9;
+    --accent-glow: rgba(34, 211, 238, 0.16);
+    --accent-bg: rgba(34, 211, 238, 0.08);
+    --time-color: #f1f5f9;
+    --warn: #fbbf24;
+    --danger: #fb7185;
+    --card-shadow: none;
 }
+
+[data-theme="light"] {
+    color-scheme: light;
+    --bg-primary: #fafbfc;
+    --bg-secondary: #f1f4f8;
+    --bg-card: #ffffff;
+    --bg-card-hover: #f5f7fa;
+    --bg-elevated: #eef1f5;
+    --bg-rec: rgba(15, 23, 42, 0.025);
+    --border: rgba(15, 23, 42, 0.08);
+    --border-soft: rgba(15, 23, 42, 0.05);
+    --text-primary: #0f172a;
+    --text-secondary: #475569;
+    --text-muted: #64748b;
+    --accent: #0891b2;
+    --accent-dim: #155e75;
+    --accent-glow: rgba(8, 145, 178, 0.12);
+    --accent-bg: rgba(8, 145, 178, 0.06);
+    --time-color: #0f172a;
+    --warn: #b45309;
+    --danger: #be123c;
+    --card-shadow: 0 1px 2px rgba(15, 23, 42, 0.04), 0 8px 24px rgba(15, 23, 42, 0.06);
+}
+
+html { transition: background-color 0.25s ease; }
+body { transition: background-color 0.25s ease, color 0.25s ease; }
 * { box-sizing: border-box; margin: 0; padding: 0; }
 html, body { height: 100%; }
 body {
@@ -92,6 +120,35 @@ a { color: inherit; text-decoration: none; }
     color: var(--accent);
     filter: drop-shadow(0 0 6px rgba(45, 212, 212, 0.5));
 }
+
+/* Theme toggle */
+.theme-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 18px;
+    padding: 10px 12px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    color: var(--text-secondary);
+    font-size: 13px;
+    cursor: pointer;
+    user-select: none;
+    transition: all 0.15s ease;
+    width: 100%;
+}
+.theme-toggle:hover { color: var(--text-primary); border-color: var(--accent-dim); }
+.theme-toggle svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+.theme-toggle .icon-sun { display: none; }
+.theme-toggle .icon-moon { display: inline-block; }
+[data-theme="light"] .theme-toggle .icon-sun { display: inline-block; }
+[data-theme="light"] .theme-toggle .icon-moon { display: none; }
+.theme-toggle .label-dark { display: none; }
+.theme-toggle .label-light { display: inline; }
+[data-theme="light"] .theme-toggle .label-dark { display: inline; }
+[data-theme="light"] .theme-toggle .label-light { display: none; }
 
 /* Sidebar nav */
 .nav-list { display: flex; flex-direction: column; gap: 2px; }
@@ -267,7 +324,8 @@ a { color: inherit; text-decoration: none; }
     border: 1px solid var(--border);
     border-radius: 12px;
     padding: 18px 20px;
-    transition: all 0.15s ease;
+    box-shadow: var(--card-shadow);
+    transition: background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
 }
 .news-card:hover {
     background: var(--bg-card-hover);
@@ -563,6 +621,20 @@ function switchView(viewKey) {
     }
 }
 
+function setTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    try { localStorage.setItem('theme', theme); } catch (e) {}
+}
+function toggleTheme() {
+    const current = document.documentElement.getAttribute('data-theme') || 'dark';
+    setTheme(current === 'dark' ? 'light' : 'dark');
+}
+(function initTheme() {
+    let saved;
+    try { saved = localStorage.getItem('theme'); } catch (e) {}
+    setTheme(saved || 'dark');
+})();
+
 document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.pill-tab').forEach(tab => {
         tab.addEventListener('click', () => applyFilter(tab.dataset.tab));
@@ -570,6 +642,8 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.nav-link').forEach(link => {
         link.addEventListener('click', () => switchView(link.dataset.view));
     });
+    const toggle = document.getElementById('themeToggle');
+    if (toggle) toggle.addEventListener('click', toggleTheme);
 });
 """
 
@@ -851,6 +925,9 @@ def render_html_content(
     icon_history = '<svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l3 2"/></svg>'
     icon_chat = '<svg viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>'
 
+    icon_moon = '<svg class="icon-moon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>'
+    icon_sun = '<svg class="icon-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><line x1="12" y1="2" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="22"/><line x1="4.93" y1="4.93" x2="6.34" y2="6.34"/><line x1="17.66" y1="17.66" x2="19.07" y2="19.07"/><line x1="2" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="22" y2="12"/><line x1="4.93" y1="19.07" x2="6.34" y2="17.66"/><line x1="17.66" y1="6.34" x2="19.07" y2="4.93"/></svg>'
+
     sidebar_html = f"""
         <div class="logo-box">
             <div class="logo-text">资讯{icon_logo}热点</div>
@@ -862,7 +939,12 @@ def render_html_content(
             <div class="nav-link" data-view="about">{icon_heart}关于</div>
             <div class="nav-link" data-view="changelog">{icon_history}更新日志</div>
             <div class="nav-link" data-view="feedback">{icon_chat}反馈</div>
-        </nav>"""
+        </nav>
+        <div class="theme-toggle" id="themeToggle">
+            {icon_moon}{icon_sun}
+            <span class="label-light">浅色模式</span>
+            <span class="label-dark">深色模式</span>
+        </div>"""
 
     html = f"""<!DOCTYPE html>
 <html lang="zh-CN">
@@ -870,6 +952,7 @@ def render_html_content(
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>资讯热点 · {date_str}</title>
+    <script>(function(){{try{{var t=localStorage.getItem('theme')||'dark';document.documentElement.setAttribute('data-theme',t);}}catch(e){{}}}})();</script>
     <style>{CSS}</style>
 </head>
 <body>
@@ -879,12 +962,6 @@ def render_html_content(
             <div class="hero">
                 <h1 class="hero-title">精选</h1>
                 <div class="hero-subtitle">AI 自动挑选的全网高价值热点 · {date_str} · {time_str} · {mode_label}</div>
-            </div>
-
-            <div class="stats-bar">
-                <div class="stat-item">抓取总数 <b>{total_titles}</b></div>
-                <div class="stat-item">热榜精选 <b>{hot_count}</b></div>
-                <div class="stat-item">RSS 精选 <b>{rss_count}</b></div>
             </div>
 
             {failed_html}

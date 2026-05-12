@@ -4,27 +4,56 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>资讯热点 · 2026-05-12</title>
+    <script>(function(){try{var t=localStorage.getItem('theme')||'dark';document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
     <style>
-:root {
-    --bg-primary: #0a1119;
-    --bg-secondary: #0d1525;
-    --bg-card: #131b2c;
-    --bg-card-hover: #1a2340;
-    --bg-elevated: #1f2a3f;
-    --bg-rec: rgba(255, 255, 255, 0.025);
-    --border: #1e2a3e;
-    --border-soft: #182236;
-    --text-primary: #e8ecf2;
-    --text-secondary: #a0a8b8;
-    --text-muted: #5a6478;
-    --accent: #2dd4d4;
-    --accent-dim: #1ba8a8;
-    --accent-glow: rgba(45, 212, 212, 0.15);
-    --accent-bg: rgba(45, 212, 212, 0.08);
-    --time-color: #f0f3f8;
-    --warn: #f59e0b;
-    --danger: #ef4444;
+/* 颜色对齐 aihot.virxact.com 的主题变量 */
+:root, [data-theme="dark"] {
+    --bg-primary: #060814;
+    --bg-secondary: #0b0f1a;
+    --bg-card: #111827;
+    --bg-card-hover: #1e293b;
+    --bg-elevated: #1e293b;
+    --bg-rec: rgba(255, 255, 255, 0.04);
+    --border: rgba(255, 255, 255, 0.06);
+    --border-soft: rgba(255, 255, 255, 0.04);
+    --text-primary: #f1f5f9;
+    --text-secondary: #94a3b8;
+    --text-muted: #64748b;
+    --accent: #22d3ee;
+    --accent-dim: #67e8f9;
+    --accent-glow: rgba(34, 211, 238, 0.16);
+    --accent-bg: rgba(34, 211, 238, 0.08);
+    --time-color: #f1f5f9;
+    --warn: #fbbf24;
+    --danger: #fb7185;
+    --card-shadow: none;
 }
+
+[data-theme="light"] {
+    color-scheme: light;
+    --bg-primary: #fafbfc;
+    --bg-secondary: #f1f4f8;
+    --bg-card: #ffffff;
+    --bg-card-hover: #f5f7fa;
+    --bg-elevated: #eef1f5;
+    --bg-rec: rgba(15, 23, 42, 0.025);
+    --border: rgba(15, 23, 42, 0.08);
+    --border-soft: rgba(15, 23, 42, 0.05);
+    --text-primary: #0f172a;
+    --text-secondary: #475569;
+    --text-muted: #64748b;
+    --accent: #0891b2;
+    --accent-dim: #155e75;
+    --accent-glow: rgba(8, 145, 178, 0.12);
+    --accent-bg: rgba(8, 145, 178, 0.06);
+    --time-color: #0f172a;
+    --warn: #b45309;
+    --danger: #be123c;
+    --card-shadow: 0 1px 2px rgba(15, 23, 42, 0.04), 0 8px 24px rgba(15, 23, 42, 0.06);
+}
+
+html { transition: background-color 0.25s ease; }
+body { transition: background-color 0.25s ease, color 0.25s ease; }
 * { box-sizing: border-box; margin: 0; padding: 0; }
 html, body { height: 100%; }
 body {
@@ -80,6 +109,35 @@ a { color: inherit; text-decoration: none; }
     color: var(--accent);
     filter: drop-shadow(0 0 6px rgba(45, 212, 212, 0.5));
 }
+
+/* Theme toggle */
+.theme-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 18px;
+    padding: 10px 12px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    color: var(--text-secondary);
+    font-size: 13px;
+    cursor: pointer;
+    user-select: none;
+    transition: all 0.15s ease;
+    width: 100%;
+}
+.theme-toggle:hover { color: var(--text-primary); border-color: var(--accent-dim); }
+.theme-toggle svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+.theme-toggle .icon-sun { display: none; }
+.theme-toggle .icon-moon { display: inline-block; }
+[data-theme="light"] .theme-toggle .icon-sun { display: inline-block; }
+[data-theme="light"] .theme-toggle .icon-moon { display: none; }
+.theme-toggle .label-dark { display: none; }
+.theme-toggle .label-light { display: inline; }
+[data-theme="light"] .theme-toggle .label-dark { display: inline; }
+[data-theme="light"] .theme-toggle .label-light { display: none; }
 
 /* Sidebar nav */
 .nav-list { display: flex; flex-direction: column; gap: 2px; }
@@ -255,7 +313,8 @@ a { color: inherit; text-decoration: none; }
     border: 1px solid var(--border);
     border-radius: 12px;
     padding: 18px 20px;
-    transition: all 0.15s ease;
+    box-shadow: var(--card-shadow);
+    transition: background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
 }
 .news-card:hover {
     background: var(--bg-card-hover);
@@ -487,17 +546,22 @@ a { color: inherit; text-decoration: none; }
             <div class="nav-link" data-view="about"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>关于</div>
             <div class="nav-link" data-view="changelog"><svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l3 2"/></svg>更新日志</div>
             <div class="nav-link" data-view="feedback"><svg viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>反馈</div>
-        </nav></aside>
+        </nav>
+        <div class="theme-toggle" id="themeToggle">
+            <svg class="icon-moon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg><svg class="icon-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><line x1="12" y1="2" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="22"/><line x1="4.93" y1="4.93" x2="6.34" y2="6.34"/><line x1="17.66" y1="17.66" x2="19.07" y2="19.07"/><line x1="2" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="22" y2="12"/><line x1="4.93" y1="19.07" x2="6.34" y2="17.66"/><line x1="17.66" y1="6.34" x2="19.07" y2="4.93"/></svg>
+            <span class="label-light">浅色模式</span>
+            <span class="label-dark">深色模式</span>
+        </div></aside>
         <main class="main">
             <div class="hero">
                 <h1 class="hero-title">精选</h1>
-                <div class="hero-subtitle">AI 自动挑选的全网高价值热点 · 2026-05-12 · 10:10 · 实时榜单</div>
+                <div class="hero-subtitle">AI 自动挑选的全网高价值热点 · 2026-05-12 · 10:55 · 实时榜单</div>
             </div>
 
             <div class="stats-bar">
-                <div class="stat-item">抓取总数 <b>339</b></div>
+                <div class="stat-item">抓取总数 <b>370</b></div>
                 <div class="stat-item">热榜精选 <b>23</b></div>
-                <div class="stat-item">RSS 精选 <b>7</b></div>
+                <div class="stat-item">RSS 精选 <b>8</b></div>
             </div>
 
             
@@ -505,30 +569,19 @@ a { color: inherit; text-decoration: none; }
             
         <div class="editor-note">
             <div class="editor-note-label">今日导读</div>
-            <div class="editor-note-content">全网霸屏：「美国制裁3家中国公司」登顶凤凰网榜首，叠加「特朗普时隔九年再访华」在知乎、华尔街见闻、财联社等7平台同步爆发，构成地缘科技博弈主线；「印尼菲律宾共建镍OPEC」作为隐性支线，在知乎与今日头条双平台高频共振，指向关键矿产供应链重构。微观领域：1. 半导体制造借沪指破4200点+科创50新高实现资本面与产业面双重确认；2. 微信状态访客功能在微博/百度/抖音形成「功能内测—用户发声—客服回应」完整传播链，属典型社交产品微创新引爆；3. 追觅俞浩回应「贾跃亭类比」折射硬科技企业盈利叙事争夺战。</div>
+            <div class="editor-note-content">全网霸屏：「美国以协助伊朗为由制裁3家中国公司」登顶凤凰网榜首，同步引爆微博、知乎、今日头条等7平台，构成当前最强势的地缘科技博弈主线；【宏观主线】中美战略对峙进入“技术制裁+元首会晤”双轨并行新阶段，制裁事件非孤立动作，而是为特朗普访华预设谈判筹码与舆论铺垫；【微观领域】1. 半导体板块借势爆发——沪指破4200点、科创50新高、芯片LOF溢价率47%，显示资本将地缘风险解读为国产替代加速信号；2. 商业航天「人工胚胎首次进入太空」冲至B站TOP3，折射科技叙事从工程能力向生命科学边疆拓展；3. 微信状态访客功能测试（8条相关热榜）表面是产品小迭代，实则暴露全民对数字身份可见性与隐私控制权的集体焦虑。</div>
         </div>
 
-            <div class="pill-tabs-wrap"><div class="pill-tabs"><button class="pill-tab active" data-tab="all">全部<span class="count">30</span></button><button class="pill-tab" data-tab="hotlist">热榜<span class="count">23</span></button><button class="pill-tab" data-tab="rss">RSS<span class="count">7</span></button><button class="pill-tab" data-tab="中国科技公司">中国科技公司<span class="count">7</span></button><button class="pill-tab" data-tab="地缘科技博弈">地缘科技博弈<span class="count">6</span></button><button class="pill-tab" data-tab="半导体制造">半导体制造<span class="count">4</span></button><button class="pill-tab" data-tab="智能汽车">智能汽车<span class="count">2</span></button><button class="pill-tab" data-tab="新消费零售">新消费零售<span class="count">2</span></button><button class="pill-tab" data-tab="大模型与AI产品">大模型与AI产品<span class="count">1</span></button></div></div>
+            <div class="pill-tabs-wrap"><div class="pill-tabs"><button class="pill-tab active" data-tab="all">全部<span class="count">31</span></button><button class="pill-tab" data-tab="hotlist">热榜<span class="count">23</span></button><button class="pill-tab" data-tab="rss">RSS<span class="count">8</span></button><button class="pill-tab" data-tab="中国科技公司">中国科技公司<span class="count">8</span></button><button class="pill-tab" data-tab="地缘科技博弈">地缘科技博弈<span class="count">7</span></button><button class="pill-tab" data-tab="半导体制造">半导体制造<span class="count">2</span></button><button class="pill-tab" data-tab="智能汽车">智能汽车<span class="count">2</span></button><button class="pill-tab" data-tab="大模型与AI产品">大模型与AI产品<span class="count">1</span></button><button class="pill-tab" data-tab="新型能源">新型能源<span class="count">1</span></button></div></div>
 
             <div class="feed">
     <div class="feed-item" data-type="hotlist" data-tags="中国科技公司">
         <div class="feed-time">
             <div class="feed-time-date">05-12</div>
-            <div class="feed-time-big">10:09</div>
+            <div class="feed-time-big">10:55</div>
         </div>
         <article class="news-card">
-            <div class="card-header"><span class="source-avatar">微</span><span class="source-name">微博</span><span class="rank-badge top">#1-28</span><span class="repeat-flag">10 次上榜</span></div>
-            <div class="card-title"><a href="https://s.weibo.com/weibo?q=%E5%BE%AE%E4%BF%A1%E7%8A%B6%E6%80%81+%E8%AE%BF%E5%AE%A2%E8%AE%B0%E5%BD%95" target="_blank" rel="noopener">微信状态 访客记录</a></div>
-            <div class="card-tags"><span class="card-tag">中国科技公司</span></div>
-        </article>
-    </div>
-    <div class="feed-item" data-type="hotlist" data-tags="中国科技公司">
-        <div class="feed-time">
-            <div class="feed-time-date">05-12</div>
-            <div class="feed-time-big">10:09</div>
-        </div>
-        <article class="news-card">
-            <div class="card-header"><span class="source-avatar">微</span><span class="source-name">微博</span><span class="rank-badge top">#1-5</span><span class="repeat-flag">10 次上榜</span></div>
+            <div class="card-header"><span class="source-avatar">微</span><span class="source-name">微博</span><span class="rank-badge top">#1-5</span><span class="repeat-flag">12 次上榜</span></div>
             <div class="card-title"><a href="https://s.weibo.com/weibo?q=%23%E8%A2%AB%E5%86%85%E6%B5%8B%E5%BE%AE%E4%BF%A1%E7%8A%B6%E6%80%81%E8%AE%BF%E5%AE%A2%E8%AE%B0%E5%BD%95%E7%94%A8%E6%88%B7%E5%8F%91%E5%A3%B0%23" target="_blank" rel="noopener">被内测微信状态访客记录用户发声</a></div>
             <div class="card-tags"><span class="card-tag">中国科技公司</span></div>
         </article>
@@ -536,32 +589,21 @@ a { color: inherit; text-decoration: none; }
     <div class="feed-item" data-type="hotlist" data-tags="地缘科技博弈">
         <div class="feed-time">
             <div class="feed-time-date">05-12</div>
-            <div class="feed-time-big">10:09</div>
+            <div class="feed-time-big">10:55</div>
         </div>
         <article class="news-card">
-            <div class="card-header"><span class="source-avatar">凤</span><span class="source-name">凤凰网</span><span class="rank-badge top">#1</span><span class="repeat-flag">10 次上榜</span></div>
+            <div class="card-header"><span class="source-avatar">凤</span><span class="source-name">凤凰网</span><span class="rank-badge top">#1</span><span class="repeat-flag">12 次上榜</span></div>
             <div class="card-title"><a href="https://news.ifeng.com/c/8t2b0FtT2VP" target="_blank" rel="noopener">美国以协助伊朗为由制裁3家中国公司，外交部回应</a></div>
-            <div class="card-tags"><span class="card-tag">地缘科技博弈</span></div>
-        </article>
-    </div>
-    <div class="feed-item" data-type="hotlist" data-tags="地缘科技博弈">
-        <div class="feed-time">
-            <div class="feed-time-date">05-12</div>
-            <div class="feed-time-big">10:09</div>
-        </div>
-        <article class="news-card">
-            <div class="card-header"><span class="source-avatar">知</span><span class="source-name">知乎</span><span class="rank-badge top">#1-20</span><span class="repeat-flag">10 次上榜</span></div>
-            <div class="card-title"><a href="https://www.zhihu.com/question/2036749487478199013" target="_blank" rel="noopener">印尼携手菲律宾打造「镍 OPEC」，不断推动镍出口新政，这对中企有何影响？对经济有何影响？</a></div>
             <div class="card-tags"><span class="card-tag">地缘科技博弈</span></div>
         </article>
     </div>
     <div class="feed-item" data-type="hotlist" data-tags="中国科技公司">
         <div class="feed-time">
             <div class="feed-time-date">05-12</div>
-            <div class="feed-time-big">10:09</div>
+            <div class="feed-time-big">10:55</div>
         </div>
         <article class="news-card">
-            <div class="card-header"><span class="source-avatar">知</span><span class="source-name">知乎</span><span class="rank-badge top">#2-4</span><span class="repeat-flag">10 次上榜</span></div>
+            <div class="card-header"><span class="source-avatar">知</span><span class="source-name">知乎</span><span class="rank-badge top">#2-9</span><span class="repeat-flag">12 次上榜</span></div>
             <div class="card-title"><a href="https://www.zhihu.com/question/2029535031119426147" target="_blank" rel="noopener">追觅创始人俞浩回应被比作贾跃亭，称「乐视从头到尾都在亏损，而追觅的主业一直是盈利的」，如何理解？</a></div>
             <div class="card-tags"><span class="card-tag">中国科技公司</span></div>
         </article>
@@ -569,10 +611,10 @@ a { color: inherit; text-decoration: none; }
     <div class="feed-item" data-type="hotlist" data-tags="商业航天">
         <div class="feed-time">
             <div class="feed-time-date">05-12</div>
-            <div class="feed-time-big">10:09</div>
+            <div class="feed-time-big">10:55</div>
         </div>
         <article class="news-card">
-            <div class="card-header"><span class="source-avatar">b</span><span class="source-name">bilibili 热搜</span><span class="rank-badge top">#2-3</span><span class="repeat-flag">8 次上榜</span></div>
+            <div class="card-header"><span class="source-avatar">b</span><span class="source-name">bilibili 热搜</span><span class="rank-badge top">#2-3</span><span class="repeat-flag">10 次上榜</span></div>
             <div class="card-title"><a href="https://search.bilibili.com/all?keyword=%E4%BA%BA%E5%B7%A5%E8%83%9A%E8%83%8E%E9%A6%96%E6%AC%A1%E8%BF%9B%E5%85%A5%E5%A4%AA%E7%A9%BA" target="_blank" rel="noopener">人工胚胎首次进入太空</a></div>
             <div class="card-tags"><span class="card-tag">商业航天</span></div>
         </article>
@@ -580,10 +622,10 @@ a { color: inherit; text-decoration: none; }
     <div class="feed-item" data-type="hotlist" data-tags="半导体制造">
         <div class="feed-time">
             <div class="feed-time-date">05-12</div>
-            <div class="feed-time-big">10:09</div>
+            <div class="feed-time-big">10:55</div>
         </div>
         <article class="news-card">
-            <div class="card-header"><span class="source-avatar">财</span><span class="source-name">财联社热门</span><span class="rank-badge top">#3</span><span class="repeat-flag">10 次上榜</span></div>
+            <div class="card-header"><span class="source-avatar">财</span><span class="source-name">财联社热门</span><span class="rank-badge top">#3</span><span class="repeat-flag">12 次上榜</span></div>
             <div class="card-title"><a href="https://www.cls.cn/detail/2368315" target="_blank" rel="noopener">全球芯片LOF溢价率47%惊呆市场！是机会还是暗藏风险？</a></div>
             <div class="card-tags"><span class="card-tag">半导体制造</span></div>
         </article>
@@ -591,21 +633,32 @@ a { color: inherit; text-decoration: none; }
     <div class="feed-item" data-type="hotlist" data-tags="地缘科技博弈">
         <div class="feed-time">
             <div class="feed-time-date">05-12</div>
-            <div class="feed-time-big">10:09</div>
+            <div class="feed-time-big">10:55</div>
         </div>
         <article class="news-card">
-            <div class="card-header"><span class="source-avatar">知</span><span class="source-name">知乎</span><span class="rank-badge top">#3-6</span><span class="repeat-flag">10 次上榜</span></div>
+            <div class="card-header"><span class="source-avatar">知</span><span class="source-name">知乎</span><span class="rank-badge top">#3-6</span><span class="repeat-flag">12 次上榜</span></div>
             <div class="card-title"><a href="https://www.zhihu.com/question/2037161087863353508" target="_blank" rel="noopener">美国总统特朗普时隔九年再度对中国进行国事访问，双方可能会就哪些问题进行磋商？较上次访华会有什么变化？</a></div>
             <div class="card-tags"><span class="card-tag">地缘科技博弈</span></div>
+        </article>
+    </div>
+    <div class="feed-item" data-type="hotlist" data-tags="新型能源">
+        <div class="feed-time">
+            <div class="feed-time-date">05-12</div>
+            <div class="feed-time-big">10:55</div>
+        </div>
+        <article class="news-card">
+            <div class="card-header"><span class="source-avatar">抖</span><span class="source-name">抖音</span><span class="rank-badge top">#3</span><span class="repeat-flag">2 次上榜</span></div>
+            <div class="card-title"><a href="https://www.douyin.com/hot/2495784" target="_blank" rel="noopener">新型电网到底有多硬核</a></div>
+            <div class="card-tags"><span class="card-tag">新型能源</span></div>
         </article>
     </div>
     <div class="feed-item" data-type="hotlist" data-tags="中国科技公司">
         <div class="feed-time">
             <div class="feed-time-date">05-12</div>
-            <div class="feed-time-big">10:09</div>
+            <div class="feed-time-big">10:55</div>
         </div>
         <article class="news-card">
-            <div class="card-header"><span class="source-avatar">百</span><span class="source-name">百度热搜</span><span class="rank-badge high">#4-5</span><span class="repeat-flag">10 次上榜</span></div>
+            <div class="card-header"><span class="source-avatar">百</span><span class="source-name">百度热搜</span><span class="rank-badge high">#4-5</span><span class="repeat-flag">12 次上榜</span></div>
             <div class="card-title"><a href="https://www.baidu.com/s?wd=%E5%BE%AE%E4%BF%A1%E7%8A%B6%E6%80%81%E8%83%BD%E7%9C%8B%E8%AE%BF%E5%AE%A2%E4%BA%86%EF%BC%9F%E5%9B%9E%E5%BA%94%E6%9D%A5%E4%BA%86" target="_blank" rel="noopener">微信状态能看访客了？回应来了</a></div>
             <div class="card-tags"><span class="card-tag">中国科技公司</span></div>
         </article>
@@ -613,10 +666,10 @@ a { color: inherit; text-decoration: none; }
     <div class="feed-item" data-type="hotlist" data-tags="中国科技公司">
         <div class="feed-time">
             <div class="feed-time-date">05-12</div>
-            <div class="feed-time-big">10:09</div>
+            <div class="feed-time-big">10:55</div>
         </div>
         <article class="news-card">
-            <div class="card-header"><span class="source-avatar">微</span><span class="source-name">微博</span><span class="rank-badge high">#4-5</span><span class="repeat-flag">10 次上榜</span></div>
+            <div class="card-header"><span class="source-avatar">微</span><span class="source-name">微博</span><span class="rank-badge high">#4-14</span><span class="repeat-flag">12 次上榜</span></div>
             <div class="card-title"><a href="https://s.weibo.com/weibo?q=Deepseek%E5%88%86%E6%9E%90145%E6%96%A4%E6%80%8E%E4%B9%88%E7%98%A6%E5%88%B0100%E6%96%A4" target="_blank" rel="noopener">Deepseek分析145斤怎么瘦到100斤</a></div>
             <div class="card-tags"><span class="card-tag">中国科技公司</span></div>
         </article>
@@ -624,10 +677,10 @@ a { color: inherit; text-decoration: none; }
     <div class="feed-item" data-type="hotlist" data-tags="半导体制造">
         <div class="feed-time">
             <div class="feed-time-date">05-12</div>
-            <div class="feed-time-big">10:09</div>
+            <div class="feed-time-big">10:55</div>
         </div>
         <article class="news-card">
-            <div class="card-header"><span class="source-avatar">华</span><span class="source-name">华尔街见闻</span><span class="rank-badge high">#4-5</span><span class="repeat-flag">10 次上榜</span></div>
+            <div class="card-header"><span class="source-avatar">华</span><span class="source-name">华尔街见闻</span><span class="rank-badge high">#4-5</span><span class="repeat-flag">12 次上榜</span></div>
             <div class="card-title"><a href="https://wallstreetcn.com/articles/3771947" target="_blank" rel="noopener">沪指站上4200点创近11年新高，科创50创历史新高，芯片、半导体集体爆发、千亿巨头狂拉</a></div>
             <div class="card-tags"><span class="card-tag">半导体制造</span></div>
         </article>
@@ -635,54 +688,43 @@ a { color: inherit; text-decoration: none; }
     <div class="feed-item" data-type="hotlist" data-tags="智能汽车">
         <div class="feed-time">
             <div class="feed-time-date">05-12</div>
-            <div class="feed-time-big">10:09</div>
+            <div class="feed-time-big">10:55</div>
         </div>
         <article class="news-card">
-            <div class="card-header"><span class="source-avatar">b</span><span class="source-name">bilibili 热搜</span><span class="rank-badge high">#4-10</span><span class="repeat-flag">10 次上榜</span></div>
+            <div class="card-header"><span class="source-avatar">b</span><span class="source-name">bilibili 热搜</span><span class="rank-badge high">#4-10</span><span class="repeat-flag">12 次上榜</span></div>
             <div class="card-title"><a href="https://search.bilibili.com/all?keyword=%E5%BC%A0%E9%9B%AA%E6%9C%BA%E8%BD%A6%E8%BD%A6%E6%89%8B%E7%9A%84%E5%8C%88%E7%89%99%E5%88%A9Vlog" target="_blank" rel="noopener">张雪机车车手的匈牙利Vlog</a></div>
             <div class="card-tags"><span class="card-tag">智能汽车</span></div>
-        </article>
-    </div>
-    <div class="feed-item" data-type="hotlist" data-tags="半导体制造">
-        <div class="feed-time">
-            <div class="feed-time-date">05-12</div>
-            <div class="feed-time-big">10:09</div>
-        </div>
-        <article class="news-card">
-            <div class="card-header"><span class="source-avatar">华</span><span class="source-name">华尔街见闻</span><span class="rank-badge ">#8-9</span><span class="repeat-flag">10 次上榜</span></div>
-            <div class="card-title"><a href="https://wallstreetcn.com/articles/3771949" target="_blank" rel="noopener">海力士的奖金，半导体的周期</a></div>
-            <div class="card-tags"><span class="card-tag">半导体制造</span></div>
         </article>
     </div>
     <div class="feed-item" data-type="hotlist" data-tags="智能汽车">
         <div class="feed-time">
             <div class="feed-time-date">05-12</div>
-            <div class="feed-time-big">10:09</div>
+            <div class="feed-time-big">10:55</div>
         </div>
         <article class="news-card">
-            <div class="card-header"><span class="source-avatar">知</span><span class="source-name">知乎</span><span class="rank-badge ">#9-11</span><span class="repeat-flag">10 次上榜</span></div>
+            <div class="card-header"><span class="source-avatar">知</span><span class="source-name">知乎</span><span class="rank-badge ">#9-13</span><span class="repeat-flag">12 次上榜</span></div>
             <div class="card-title"><a href="https://www.zhihu.com/question/2036182709417005583" target="_blank" rel="noopener">比亚迪已建成 5924 座闪充站，累计充电量破 2100 万度，此举将如何提升其市场竞争力？</a></div>
             <div class="card-tags"><span class="card-tag">智能汽车</span></div>
         </article>
     </div>
-    <div class="feed-item" data-type="hotlist" data-tags="半导体制造">
+    <div class="feed-item" data-type="hotlist" data-tags="地缘科技博弈">
         <div class="feed-time">
             <div class="feed-time-date">05-12</div>
-            <div class="feed-time-big">10:09</div>
+            <div class="feed-time-big">10:55</div>
         </div>
         <article class="news-card">
-            <div class="card-header"><span class="source-avatar">今</span><span class="source-name">今日头条</span><span class="rank-badge ">#10-18</span><span class="repeat-flag">7 次上榜</span></div>
-            <div class="card-title"><a href="https://www.toutiao.com/trending/7638769840957689353/" target="_blank" rel="noopener">韩国为何成半导体行情核心引擎</a></div>
-            <div class="card-tags"><span class="card-tag">半导体制造</span></div>
+            <div class="card-header"><span class="source-avatar">微</span><span class="source-name">微博</span><span class="rank-badge ">#10</span><span class="repeat-flag">2 次上榜</span></div>
+            <div class="card-title"><a href="https://s.weibo.com/weibo?q=%23%E7%89%B9%E6%9C%97%E6%99%AE%E5%8F%91%E6%96%87%E7%A7%B0%E9%9D%9E%E5%B8%B8%E6%9C%9F%E5%BE%85%E4%B8%AD%E5%9B%BD%E4%B9%8B%E8%A1%8C%23" target="_blank" rel="noopener">特朗普发文称非常期待中国之行</a></div>
+            <div class="card-tags"><span class="card-tag">地缘科技博弈</span></div>
         </article>
     </div>
     <div class="feed-item" data-type="hotlist" data-tags="中国科技公司">
         <div class="feed-time">
             <div class="feed-time-date">05-12</div>
-            <div class="feed-time-big">10:09</div>
+            <div class="feed-time-big">10:55</div>
         </div>
         <article class="news-card">
-            <div class="card-header"><span class="source-avatar">财</span><span class="source-name">财联社热门</span><span class="rank-badge ">#12-13</span><span class="repeat-flag">7 次上榜</span></div>
+            <div class="card-header"><span class="source-avatar">财</span><span class="source-name">财联社热门</span><span class="rank-badge ">#12-13</span><span class="repeat-flag">9 次上榜</span></div>
             <div class="card-title"><a href="https://www.cls.cn/detail/2368501" target="_blank" rel="noopener">微信状态能看访客了？腾讯客服回应</a></div>
             <div class="card-tags"><span class="card-tag">中国科技公司</span></div>
         </article>
@@ -690,32 +732,21 @@ a { color: inherit; text-decoration: none; }
     <div class="feed-item" data-type="hotlist" data-tags="大模型与AI产品">
         <div class="feed-time">
             <div class="feed-time-date">05-12</div>
-            <div class="feed-time-big">10:09</div>
+            <div class="feed-time-big">10:55</div>
         </div>
         <article class="news-card">
-            <div class="card-header"><span class="source-avatar">b</span><span class="source-name">bilibili 热搜</span><span class="rank-badge ">#12-23</span><span class="repeat-flag">10 次上榜</span></div>
+            <div class="card-header"><span class="source-avatar">b</span><span class="source-name">bilibili 热搜</span><span class="rank-badge ">#12-24</span><span class="repeat-flag">12 次上榜</span></div>
             <div class="card-title"><a href="https://search.bilibili.com/all?keyword=AI%E5%8E%9F%E5%88%9B%E7%9F%AD%E7%89%87%E5%9B%BD%E4%BA%A7%E7%88%B1%E6%AD%BB%E6%9C%BA" target="_blank" rel="noopener">AI原创短片国产爱死机</a></div>
             <div class="card-tags"><span class="card-tag">大模型与AI产品</span></div>
-        </article>
-    </div>
-    <div class="feed-item" data-type="hotlist" data-tags="地缘科技博弈">
-        <div class="feed-time">
-            <div class="feed-time-date">05-12</div>
-            <div class="feed-time-big">10:09</div>
-        </div>
-        <article class="news-card">
-            <div class="card-header"><span class="source-avatar">财</span><span class="source-name">财联社热门</span><span class="rank-badge ">#13</span><span class="repeat-flag">6 次上榜</span></div>
-            <div class="card-title"><a href="https://www.cls.cn/detail/2368505" target="_blank" rel="noopener">人民日报钟声：以大历史观把握中美关系发展方向</a></div>
-            <div class="card-tags"><span class="card-tag">地缘科技博弈</span></div>
         </article>
     </div>
     <div class="feed-item" data-type="hotlist" data-tags="中国科技公司">
         <div class="feed-time">
             <div class="feed-time-date">05-12</div>
-            <div class="feed-time-big">10:09</div>
+            <div class="feed-time-big">10:55</div>
         </div>
         <article class="news-card">
-            <div class="card-header"><span class="source-avatar">抖</span><span class="source-name">抖音</span><span class="rank-badge ">#15</span><span class="repeat-flag">7 次上榜</span></div>
+            <div class="card-header"><span class="source-avatar">抖</span><span class="source-name">抖音</span><span class="rank-badge ">#15</span><span class="repeat-flag">9 次上榜</span></div>
             <div class="card-title"><a href="https://www.douyin.com/hot/2495755" target="_blank" rel="noopener">客服回应微信状态访客记录功能</a></div>
             <div class="card-tags"><span class="card-tag">中国科技公司</span></div>
         </article>
@@ -723,45 +754,78 @@ a { color: inherit; text-decoration: none; }
     <div class="feed-item" data-type="hotlist" data-tags="地缘科技博弈">
         <div class="feed-time">
             <div class="feed-time-date">05-12</div>
-            <div class="feed-time-big">10:09</div>
+            <div class="feed-time-big">10:55</div>
         </div>
         <article class="news-card">
-            <div class="card-header"><span class="source-avatar">澎</span><span class="source-name">澎湃新闻</span><span class="rank-badge ">#20</span><span class="repeat-flag">5 次上榜</span></div>
-            <div class="card-title"><a href="https://www.thepaper.cn/newsDetail_forward_33155631" target="_blank" rel="noopener">外交部：中美元首将就事关中美关系以及世界和平与发展的重大问题深入交换意见</a></div>
+            <div class="card-header"><span class="source-avatar">今</span><span class="source-name">今日头条</span><span class="rank-badge ">#15</span><span class="repeat-flag">2 次上榜</span></div>
+            <div class="card-title"><a href="https://www.toutiao.com/trending/7638556113241604138/" target="_blank" rel="noopener">特朗普访华 哪些信号值得关注</a></div>
             <div class="card-tags"><span class="card-tag">地缘科技博弈</span></div>
-        </article>
-    </div>
-    <div class="feed-item" data-type="hotlist" data-tags="新消费零售">
-        <div class="feed-time">
-            <div class="feed-time-date">05-12</div>
-            <div class="feed-time-big">10:09</div>
-        </div>
-        <article class="news-card">
-            <div class="card-header"><span class="source-avatar">百</span><span class="source-name">百度热搜</span><span class="rank-badge ">#23-26</span><span class="repeat-flag">10 次上榜</span></div>
-            <div class="card-title"><a href="https://www.baidu.com/s?wd=%E8%83%96%E4%B8%9C%E6%9D%A5%E4%B9%B0%E7%94%B5%E5%99%A8%E5%9B%BD%E8%A1%A5%E5%90%8E%E5%8F%8D%E8%B4%B511.5%E5%85%83" target="_blank" rel="noopener">胖东来买电器国补后反贵11.5元</a></div>
-            <div class="card-tags"><span class="card-tag">新消费零售</span></div>
-        </article>
-    </div>
-    <div class="feed-item" data-type="hotlist" data-tags="新消费零售">
-        <div class="feed-time">
-            <div class="feed-time-date">05-12</div>
-            <div class="feed-time-big">10:09</div>
-        </div>
-        <article class="news-card">
-            <div class="card-header"><span class="source-avatar">今</span><span class="source-name">今日头条</span><span class="rank-badge ">#27</span><span class="repeat-flag">2 次上榜</span></div>
-            <div class="card-title"><a href="https://www.toutiao.com/trending/7638591375113457194/" target="_blank" rel="noopener">男子胖东来买电器国补后反贵11.5元</a></div>
-            <div class="card-tags"><span class="card-tag">新消费零售</span></div>
         </article>
     </div>
     <div class="feed-item" data-type="hotlist" data-tags="地缘科技博弈">
         <div class="feed-time">
             <div class="feed-time-date">05-12</div>
-            <div class="feed-time-big">10:09</div>
+            <div class="feed-time-big">10:55</div>
         </div>
         <article class="news-card">
-            <div class="card-header"><span class="source-avatar">今</span><span class="source-name">今日头条</span><span class="rank-badge ">#29</span><span class="repeat-flag">2 次上榜</span></div>
+            <div class="card-header"><span class="source-avatar">澎</span><span class="source-name">澎湃新闻</span><span class="rank-badge ">#19-20</span><span class="repeat-flag">7 次上榜</span></div>
+            <div class="card-title"><a href="https://www.thepaper.cn/newsDetail_forward_33155631" target="_blank" rel="noopener">外交部：中美元首将就事关中美关系以及世界和平与发展的重大问题深入交换意见</a></div>
+            <div class="card-tags"><span class="card-tag">地缘科技博弈</span></div>
+        </article>
+    </div>
+    <div class="feed-item" data-type="hotlist" data-tags="地缘科技博弈">
+        <div class="feed-time">
+            <div class="feed-time-date">05-12</div>
+            <div class="feed-time-big">10:55</div>
+        </div>
+        <article class="news-card">
+            <div class="card-header"><span class="source-avatar">微</span><span class="source-name">微博</span><span class="rank-badge ">#20</span><span class="repeat-flag">2 次上榜</span></div>
+            <div class="card-title"><a href="https://s.weibo.com/weibo?q=%23%E9%A9%AC%E6%96%AF%E5%85%8B%E5%BA%93%E5%85%8B%E5%B0%86%E9%9A%8F%E7%89%B9%E6%9C%97%E6%99%AE%E8%AE%BF%E5%8D%8E%23" target="_blank" rel="noopener">马斯克库克将随特朗普访华</a></div>
+            <div class="card-tags"><span class="card-tag">地缘科技博弈</span></div>
+        </article>
+    </div>
+    <div class="feed-item" data-type="hotlist" data-tags="地缘科技博弈">
+        <div class="feed-time">
+            <div class="feed-time-date">05-12</div>
+            <div class="feed-time-big">10:55</div>
+        </div>
+        <article class="news-card">
+            <div class="card-header"><span class="source-avatar">今</span><span class="source-name">今日头条</span><span class="rank-badge ">#24-29</span><span class="repeat-flag">4 次上榜</span></div>
             <div class="card-title"><a href="https://www.toutiao.com/trending/7637825165153878035/" target="_blank" rel="noopener">委代总统否认该国将成美国“第51州”</a></div>
             <div class="card-tags"><span class="card-tag">地缘科技博弈</span></div>
+        </article>
+    </div>
+    <div class="feed-item" data-type="hotlist" data-tags="中国科技公司">
+        <div class="feed-time">
+            <div class="feed-time-date">05-12</div>
+            <div class="feed-time-big">10:55</div>
+        </div>
+        <article class="news-card">
+            <div class="card-header"><span class="source-avatar">微</span><span class="source-name">微博</span><span class="rank-badge ">#27-30</span><span class="repeat-flag">2 次上榜</span></div>
+            <div class="card-title"><a href="https://s.weibo.com/weibo?q=%23%E5%BE%AE%E4%BF%A1%E7%8A%B6%E6%80%81%E6%B5%8F%E8%A7%88%E8%80%85%E8%AE%A1%E6%95%B0%E6%B5%8B%E8%AF%95%E5%B7%B2%E5%81%9C%E6%AD%A2%23" target="_blank" rel="noopener">微信状态浏览者计数测试已停止</a></div>
+            <div class="card-tags"><span class="card-tag">中国科技公司</span></div>
+        </article>
+    </div>
+    <div class="feed-item" data-type="hotlist" data-tags="中国科技公司">
+        <div class="feed-time">
+            <div class="feed-time-date">05-12</div>
+            <div class="feed-time-big">10:55</div>
+        </div>
+        <article class="news-card">
+            <div class="card-header"><span class="source-avatar">百</span><span class="source-name">百度热搜</span><span class="rank-badge ">#27</span><span class="repeat-flag">2 次上榜</span></div>
+            <div class="card-title"><a href="https://www.baidu.com/s?wd=%E5%A5%B3%E5%AD%90%E5%8A%9E%E4%B8%8D%E9%99%90%E6%AC%A1%E7%91%9C%E4%BC%BD%E5%8D%A1%E5%A4%A9%E5%A4%A9%E4%B8%8A%E8%AF%BE%E8%A2%AB%E8%B8%A2%E5%87%BA%E7%BE%A4" target="_blank" rel="noopener">女子办不限次瑜伽卡天天上课被踢出群</a></div>
+            <div class="card-tags"><span class="card-tag">中国科技公司</span></div>
+        </article>
+    </div>
+    <div class="feed-item" data-type="hotlist" data-tags="文化IP产业">
+        <div class="feed-time">
+            <div class="feed-time-date">05-12</div>
+            <div class="feed-time-big">10:55</div>
+        </div>
+        <article class="news-card">
+            <div class="card-header"><span class="source-avatar">抖</span><span class="source-name">抖音</span><span class="rank-badge ">#30</span><span class="repeat-flag">2 次上榜</span></div>
+            <div class="card-title"><a href="https://www.douyin.com/hot/2495627" target="_blank" rel="noopener">光阴之外给国漫上高度了</a></div>
+            <div class="card-tags"><span class="card-tag">文化IP产业</span></div>
         </article>
     </div>
     <div class="feed-item" data-type="rss" data-tags="大模型与AI产品">
@@ -771,7 +835,7 @@ a { color: inherit; text-decoration: none; }
         </div>
         <article class="news-card">
             <div class="card-header"><span class="source-avatar">H</span><span class="source-name">Hacker News</span></div>
-            <div class="card-title"><a href="https://interfaze.ai/blog/interfaze-a-new-model-architecture-built-for-high-accuracy-at-scale" target="_blank" rel="noopener">Interfaze：一种专为大规模高精度而设计的新型模型架构</a></div>
+            <div class="card-title"><a href="https://interfaze.ai/blog/interfaze-a-new-model-architecture-built-for-high-accuracy-at-scale" target="_blank" rel="noopener">Interfaze：一种专为大规模高精度而设计的新模型架构</a></div>
             <div class="card-tags"><span class="card-tag">大模型与AI产品</span></div>
         </article>
     </div>
@@ -815,7 +879,7 @@ a { color: inherit; text-decoration: none; }
         </div>
         <article class="news-card">
             <div class="card-header"><span class="source-avatar">H</span><span class="source-name">Hacker News</span></div>
-            <div class="card-title"><a href="https://tanstack.com/blog/npm-supply-chain-compromise-postmortem" target="_blank" rel="noopener">事件复盘：TanStack npm 供应链遭入侵</a></div>
+            <div class="card-title"><a href="https://tanstack.com/blog/npm-supply-chain-compromise-postmortem" target="_blank" rel="noopener">事后分析：TanStack npm 供应链遭入侵事件</a></div>
             <div class="card-tags"><span class="card-tag">大模型与AI产品</span></div>
         </article>
     </div>
@@ -826,7 +890,7 @@ a { color: inherit; text-decoration: none; }
         </div>
         <article class="news-card">
             <div class="card-header"><span class="source-avatar">H</span><span class="source-name">Hacker News</span></div>
-            <div class="card-title"><a href="https://martin.sh/i-let-ai-build-a-tool-to-help-me-figure-out-what-was-waking-me-up-at-night/" target="_blank" rel="noopener">我让 AI 开发了一款工具，帮助我查清夜间惊醒我的原因</a></div>
+            <div class="card-title"><a href="https://martin.sh/i-let-ai-build-a-tool-to-help-me-figure-out-what-was-waking-me-up-at-night/" target="_blank" rel="noopener">我让 AI 开发了一款工具，帮助我查清夜间反复惊醒的原因</a></div>
             <div class="card-tags"><span class="card-tag">大模型与AI产品</span></div>
         </article>
     </div>
@@ -839,6 +903,17 @@ a { color: inherit; text-decoration: none; }
             <div class="card-header"><span class="source-avatar">H</span><span class="source-name">Hacker News</span></div>
             <div class="card-title"><a href="https://nvlabs.github.io/cuda-oxide/index.html" target="_blank" rel="noopener">CUDA-oxide：英伟达官方推出的 Rust 到 CUDA 编译器</a></div>
             <div class="card-tags"><span class="card-tag">AI基础设施</span></div>
+        </article>
+    </div>
+    <div class="feed-item" data-type="rss" data-tags="全球科技巨头">
+        <div class="feed-time">
+            <div class="feed-time-date">05-12</div>
+            <div class="feed-time-big">09:24</div>
+        </div>
+        <article class="news-card">
+            <div class="card-header"><span class="source-avatar">H</span><span class="source-name">Hacker News</span></div>
+            <div class="card-title"><a href="https://claude.com/blog/claude-platform-on-aws" target="_blank" rel="noopener">AWS 上的 Claude 平台</a></div>
+            <div class="card-tags"><span class="card-tag">全球科技巨头</span></div>
         </article>
     </div></div>
 
@@ -854,30 +929,30 @@ a { color: inherit; text-decoration: none; }
                     <div class="ai-blocks-grid">
                     <div class="ai-block">
                         <div class="ai-block-title">核心热点态势</div>
-                        <div class="ai-block-content">全网霸屏：「美国制裁3家中国公司」登顶凤凰网榜首，叠加「特朗普时隔九年再访华」在知乎、华尔街见闻、财联社等7平台同步爆发，构成地缘科技博弈主线；「印尼菲律宾共建镍OPEC」作为隐性支线，在知乎与今日头条双平台高频共振，指向关键矿产供应链重构。<br>微观领域：<br>1. 半导体制造借沪指破4200点+科创50新高实现资本面与产业面双重确认；<br><br>2. 微信状态访客功能在微博/百度/抖音形成「功能内测—用户发声—客服回应」完整传播链，属典型社交产品微创新引爆；<br><br>3. 追觅俞浩回应「贾跃亭类比」折射硬科技企业盈利叙事争夺战。</div>
+                        <div class="ai-block-content">全网霸屏：「美国以协助伊朗为由制裁3家中国公司」登顶凤凰网榜首，同步引爆微博、知乎、今日头条等7平台，构成当前最强势的地缘科技博弈主线；<br><br>【宏观主线】<br>中美战略对峙进入“技术制裁+元首会晤”双轨并行新阶段，制裁事件非孤立动作，而是为特朗普访华预设谈判筹码与舆论铺垫；<br><br>【微观领域】<br>1. 半导体板块借势爆发——沪指破4200点、科创50新高、芯片LOF溢价率47%，显示资本将地缘风险解读为国产替代加速信号；<br><br>2. 商业航天「人工胚胎首次进入太空」冲至B站TOP3，折射科技叙事从工程能力向生命科学边疆拓展；<br><br>3. 微信状态访客功能测试（8条相关热榜）表面是产品小迭代，实则暴露全民对数字身份可见性与隐私控制权的集体焦虑。</div>
                     </div>
                     <div class="ai-block">
                         <div class="ai-block-title">舆论风向争议</div>
-                        <div class="ai-block-content">【情绪光谱】<br>大众聚焦微信访客（好奇/隐私焦虑）与胖东来国补反贵（荒诞感），而专业场（知乎/华尔街见闻）密集讨论镍OPEC、海力士奖金周期、特朗普访华议程——舆论断层明显。<br><br>【核心矛盾】<br>1. 利益之争：镍出口新政冲击中企三元电池成本结构；<br><br>2. 认知之争：半导体周期是否已从‘库存去化’转入‘资本开支扩张’新阶段。</div>
+                        <div class="ai-block-content">【情绪光谱】<br>大众舆论聚焦‘制裁-反制’对抗爽感（微博/抖音），而专业圈层（知乎/华尔街见闻）冷静解构‘伊朗问题实质是美伊僵局转嫁压力’，并警惕芯片LOF高溢价隐含流动性风险；<br><br>【核心矛盾】<br>1. 利益之争：半导体投资者押注国产替代红利 vs 产业链下游担忧制裁扩大化；<br><br>2. 认知之争：公众将特朗普访华简化为‘外交胜利’，而国际关系分析者强调‘议程主导权争夺’——美方带马斯克库克同行，意在锁定AI与智能汽车技术合作框架。</div>
                     </div>
                     <div class="ai-block">
                         <div class="ai-block-title">异动与弱信号</div>
-                        <div class="ai-block-content">【跨平台共振】<br>「特朗普再访华」在知乎（3-6→3）、华尔街见闻（5-7→7）、凤凰网（1）、财联社（13）四平台同步发酵，但轨迹分化：知乎持续高位横盘（3→3→3），华尔街见闻呈缓升（6→5→7），暗示认知分层——知乎重议程设置，华尔街见闻重政策落地节奏。<br><br>【轨迹突变】<br>「印尼菲律宾镍OPEC」在知乎轨迹为1(08:46)→1(09:04)→20(10:01)，突发性脱榜，暴露短期情绪过热后缺乏实质进展支撑。<br><br>【弱信号捕捉】<br>「人工胚胎首次进入太空」在B站稳居2-3名，但未见于任何主流资讯平台，属商业航天向生命科学交叉渗透的早期信号。</div>
+                        <div class="ai-block-content">【跨平台共振】<br>「特朗普访华」在知乎（3-6→3）、华尔街见闻（5-7→7）、凤凰网（1）、微博（3-6）四平台同步高位运行，但轨迹分化：知乎持续上行（6→3），华尔街见闻小幅回落（5→7），暗示理性场更关注议程细节而非符号热度；<br><br>【轨迹突变】<br>「迪士尼速通机制破防」在知乎实现从2→1稳态横盘（12次出现、全程未脱榜），属典型圈层情绪核爆，但零跨平台扩散，印证Z世代文化消费逻辑与主流舆论场存在结构性温差；<br><br>【弱信号捕捉】<br>「中科大等9校全面拒收文科生」在知乎轨迹为12→17缓慢下滑，却与「追觅俞浩回应贾跃亭类比」（3→9）形成镜像——二者共同指向硬科技赛道对人才结构的强制重置，该信号尚未被财经/产业媒体充分解读。</div>
                     </div>
                     <div class="ai-block">
                         <div class="ai-block-title">研判策略建议</div>
-                        <div class="ai-block-content">1. 投资者：减持高溢价半导体LOF（当前47%溢价率超2021年峰值），转向镍产业链上游受限企业及具备闪充网络壁垒的比亚迪；<br><br>2. 品牌方：规避微信访客功能衍生的隐私话术雷区，转而强化「充电基建即服务」（如比亚迪闪充站）的B端合作叙事；<br><br>3. 公众：警惕「镍OPEC」概念炒作，关注印尼镍出口新规落地时间表（预计6月上旬公布细则），其影响将远超新能源车成本，波及不锈钢、电镀等传统工业领域。</div>
+                        <div class="ai-block-content">1. 投资者：聚焦半导体设备/材料ETF短期套利窗口（LOF溢价47%不可持续），但须在特朗普访华后48小时内评估美方是否释放AI芯片出口松动信号；<br><br>2. 品牌方：暂停所有含「国际协作」「全球技术共享」话术的智能汽车营销，转向「闪充网络覆盖率」（比亚迪5924站）等可验证基建叙事；<br><br>3. 公众：警惕「微信访客功能」类微创新引发的隐私让渡惯性，后续所有App权限请求需启动「最小必要原则」自查。</div>
                     </div>
                     <div class="ai-block">
                         <div class="ai-block-title">独立源点速览</div>
-                        <div class="ai-block-content">[知乎]:<br>迪士尼速通机制话题高位横盘（2→1），反映Z世代对体验经济公平性的敏感度升级；清华硕士智力测验争议（4→2）揭示标准化测评与真实能力的结构性偏差；「印尼镍OPEC」虽在10:01急坠至20名，但全程维持10次出现且起始即登顶，显示专业圈层对其战略权重的高度共识；「中科大等9校拒收文科生」轨迹12→15→15，折射理工科招生政策正从「专业门槛」转向「学科范式强制」。<br><br>[华尔街见闻]:<br>「美伊僵局推升原油与白银」全程霸榜（1→1），凸显地缘冲突对商品定价权的即时传导；「韩国AI公民红利」作为唯一新增政策信号（09:48首现），3分钟内跃升至TOP3，预示东亚技术治理范式正在发生静默转向；「特朗普访华」轨迹6→5→7，与知乎的3→3→3形成鲜明对比，说明财经媒体更关注会谈节奏而非议程细节。</div>
+                        <div class="ai-block-content">[知乎]:<br>「迪士尼速通机制破防」高位横盘（2→1稳态），反映Z世代对游戏公平性的伦理敏感度已升维至文化批判层面；「清华硕士智力测验25分」轨迹4→2持续上行，揭示公众对标准化测评体系的信任裂痕正在扩大；「耿同学举报Nature子刊造假」为唯一10:01后新入榜话题，呈现学术监督议题的突发性与高锐度。<br><br>[华尔街见闻]:<br>「美伊僵局→原油涨→白银暴涨7%→光通信股大涨」形成完整传导链，该硬核市场逻辑在热榜中完全缺位；「韩国提议AI超额利润返还全民」虽仅7次出现，但轨迹3→2逆势上扬，暗示全球科技治理范式正从效率优先转向分配正义，属关键弱信号。</div>
                     </div>
                     </div>
                 </div>
         </section>
 
             <footer class="site-footer">
-                资讯热点 · 数据由 TrendRadar 抓取 · 2026-05-12 10:10:24
+                资讯热点 · 数据由 TrendRadar 抓取 · 2026-05-12 10:55:44
             </footer>
         </main>
     </div>
@@ -957,6 +1032,20 @@ function switchView(viewKey) {
     }
 }
 
+function setTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    try { localStorage.setItem('theme', theme); } catch (e) {}
+}
+function toggleTheme() {
+    const current = document.documentElement.getAttribute('data-theme') || 'dark';
+    setTheme(current === 'dark' ? 'light' : 'dark');
+}
+(function initTheme() {
+    let saved;
+    try { saved = localStorage.getItem('theme'); } catch (e) {}
+    setTheme(saved || 'dark');
+})();
+
 document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.pill-tab').forEach(tab => {
         tab.addEventListener('click', () => applyFilter(tab.dataset.tab));
@@ -964,6 +1053,8 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.nav-link').forEach(link => {
         link.addEventListener('click', () => switchView(link.dataset.view));
     });
+    const toggle = document.getElementById('themeToggle');
+    if (toggle) toggle.addEventListener('click', toggleTheme);
 });
 </script>
 </body>
