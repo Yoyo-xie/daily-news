@@ -913,7 +913,7 @@ def render_html_content(
 
     sidebar_html = f"""
         <div class="logo-box">
-            <div class="logo-text">资讯{icon_logo}热点</div>
+            <div class="logo-text">每日资讯{icon_logo}热点</div>
         </div>
         <nav class="nav-list">
             <div class="nav-link active" data-view="curated">{icon_zap}精选</div>
@@ -934,7 +934,7 @@ def render_html_content(
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>资讯热点 · {date_str}</title>
+    <title>每日资讯热点</title>
     <script>(function(){{try{{var t=localStorage.getItem('theme')||'dark';document.documentElement.setAttribute('data-theme',t);}}catch(e){{}}}})();</script>
     <style>{CSS}</style>
 </head>
@@ -958,7 +958,7 @@ def render_html_content(
             {ai_section_html}
 
             <footer class="site-footer">
-                资讯热点 · 数据由 TrendRadar 抓取 · {now.strftime("%Y-%m-%d %H:%M:%S")}
+                每日资讯热点 · 数据由 TrendRadar 抓取 · {now.strftime("%Y-%m-%d %H:%M:%S")}
             </footer>
         </main>
     </div>
