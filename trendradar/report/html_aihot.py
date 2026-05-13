@@ -913,7 +913,7 @@ def render_html_content(
 
     sidebar_html = f"""
         <div class="logo-box">
-            <div class="logo-text">每日资讯热点</div>
+            <div class="logo-text">{icon_logo}</div>
         </div>
         <nav class="nav-list">
             <div class="nav-link active" data-view="curated">{icon_zap}精选</div>
