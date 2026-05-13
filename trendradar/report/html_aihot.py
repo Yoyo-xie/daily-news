@@ -359,6 +359,14 @@ a { color: inherit; text-decoration: none; }
     color: var(--text-muted);
     font-size: 11px;
 }
+.card-time {
+    margin-left: auto;
+    color: var(--text-muted);
+    font-size: 11px;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+    cursor: default;
+}
 
 .card-title {
     font-size: 16px;
@@ -674,6 +682,30 @@ def _avatar_char(source: str) -> str:
     return source[0]
 
 
+def _format_card_time(item: Dict) -> tuple:
+    """返回 (短显示 HH:MM, 完整 tooltip)。RSS 用 published_at，热榜用 first_time。"""
+    pub = item.get("published_at", "") or ""
+    if pub:
+        try:
+            dt = datetime.fromisoformat(pub.replace("Z", "+00:00"))
+            return dt.strftime("%H:%M"), dt.strftime("%Y-%m-%d %H:%M") + "（发布时间）"
+        except (ValueError, TypeError):
+            pass
+
+    td = item.get("time_display", "") or ""
+    if td:
+        first = td.strip("[]").split("~")[0].strip()
+        if first:
+            return first[:5], f"首次上榜 {first[:5]}"
+
+    ft = item.get("first_time", "") or ""
+    if ft:
+        short = ft.replace("-", ":")[:5]
+        return short, f"首次上榜 {short}"
+
+    return "", ""
+
+
 def _render_feed_item(
     item: Dict,
     tags: List[str],
@@ -701,6 +733,12 @@ def _render_feed_item(
 
     if count > 1:
         header_parts.append(f'<span class="repeat-flag">{count} 次上榜</span>')
+
+    time_short, time_full = _format_card_time(item)
+    if time_short:
+        header_parts.append(
+            f'<span class="card-time" title="{html_escape(time_full)}">{html_escape(time_short)}</span>'
+        )
 
     header_html = "".join(header_parts)
 
