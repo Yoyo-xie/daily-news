@@ -15,6 +15,7 @@ from typing import Any, Dict, List, Optional, Callable
 from trendradar.report.helpers import html_escape
 from trendradar.ai.formatter import render_ai_analysis_html_rich
 
+LOGO_B64 = "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"
 
 CSS = r"""
 /* 颜色对齐 aihot.virxact.com 的主题变量 */
@@ -105,14 +106,14 @@ a { color: inherit; text-decoration: none; }
     background: var(--bg-secondary);
 }
 .logo-text {
-    font-size: 22px;
-    font-weight: 800;
-    letter-spacing: 0.02em;
-    color: var(--text-primary);
-    display: inline-flex;
+    display: flex;
     align-items: center;
-    gap: 8px;
-    line-height: 1;
+    justify-content: center;
+}
+.logo-img {
+    width: auto;
+    height: 40px;
+    object-fit: contain;
 }
 .logo-icon {
     width: 20px;
@@ -913,7 +914,7 @@ def render_html_content(
 
     sidebar_html = f"""
         <div class="logo-box">
-            <div class="logo-text">{icon_logo}</div>
+            <div class="logo-text"><img class="logo-img" src="data:image/png;base64,{LOGO_B64}" alt="logo"></div>
         </div>
         <nav class="nav-list">
             <div class="nav-link active" data-view="curated">{icon_zap}精选</div>
