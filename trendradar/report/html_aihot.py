@@ -635,12 +635,6 @@ function switchView(viewKey) {
             aiSection.style.display = '';
             aiSection.scrollIntoView({behavior:'smooth', block:'start'});
         }
-    } else if (viewKey === 'about') {
-        setMain('关于');
-        if (feed) feed.style.display = 'none';
-        if (cats) cats.style.display = 'none';
-        if (rail) rail.style.display = 'none';
-        if (aiSection) aiSection.style.display = 'none';
     } else if (viewKey === 'changelog') {
         setMain('更新日志');
         if (feed) feed.style.display = 'none';
@@ -1157,7 +1151,6 @@ def render_html_content(
             <div class="nav-link active" data-view="curated"><span class="nav-icon">★</span><span>精选</span></div>
             <div class="nav-link" data-view="all"><span class="nav-icon">≡</span><span>全部动态</span></div>
             <div class="nav-link" data-view="daily"><span class="nav-icon">▤</span><span>每日日报</span></div>
-            <div class="nav-link" data-view="about"><span class="nav-icon">◌</span><span>关于</span></div>
             <div class="nav-link" data-view="changelog"><span class="nav-icon">↻</span><span>更新日志</span></div>
             <div class="nav-link" data-view="feedback"><span class="nav-icon">✎</span><span>反馈</span></div>
         </nav>
