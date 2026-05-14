@@ -1193,6 +1193,11 @@ def render_html_content(
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>每日资讯热点 · {date_dot}</title>
     <script>(function(){{try{{var t=localStorage.getItem('theme')||'light';document.documentElement.setAttribute('data-theme',t);}}catch(e){{}}}})();</script>
+    <link rel="icon" href="favicon.ico" sizes="any">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    <link rel="manifest" href="site.webmanifest">
+    <meta name="theme-color" content="#171717">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">

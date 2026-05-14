@@ -63,6 +63,10 @@ jobs:
           fi
           # 加一个简单的 404
           cp site/index.html site/404.html
+          # 拷贝静态资源（favicon 等）到 site 根
+          if [ -d static ]; then
+            cp -r static/. site/
+          fi
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
