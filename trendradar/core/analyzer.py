@@ -652,6 +652,8 @@ def count_rss_frequency(
                     "url": url,
                     "mobile_url": "",
                     "is_new": is_new,
+                    "summary": item.get("summary", "") or "",
+                    "published_at": published_at or "",
                 }
                 word_stats[group_key]["titles"].append(title_data)
                 break  # 一个条目只匹配第一个词组
