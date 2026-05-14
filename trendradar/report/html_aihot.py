@@ -1229,7 +1229,7 @@ def render_html_content(
             {ai_section_html}
 
             <footer class="site-footer">
-                每日资讯热点 · 数据由 TrendRadar 抓取 · {now.strftime("%Y-%m-%d %H:%M:%S")}
+                每日资讯热点 · {now.strftime("%Y-%m-%d %H:%M:%S")}
             </footer>
         </main>
         <aside class="right-rail">{right_rail_html}</aside>
