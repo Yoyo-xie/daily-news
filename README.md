@@ -2,7 +2,6 @@
 
 > 中文 AI 资讯热点聚合站。每天早 7 点自动抓取 11 个国内平台的热搜 + AI 筛选 + 卡片展示。
 
-**🌐 在线访问：** [https://yoyo-xie.github.io/daily-news/](https://yoyo-xie.github.io/daily-news/)
 
 ![favicon](static/favicon-128x128.png)
 
