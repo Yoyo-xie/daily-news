@@ -354,6 +354,56 @@ button { font-family: inherit; }
     color: var(--text-5);
     font-family: "JetBrains Mono", ui-monospace, monospace;
 }
+.multi-tag {
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--brand);
+    background: var(--brand-soft);
+    padding: 1px 6px;
+    border-radius: 3px;
+    white-space: nowrap;
+}
+.src-more {
+    margin: 2px 0 8px;
+    font-size: 12px;
+}
+.src-more > summary {
+    list-style: none;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    color: var(--text-4);
+    font-weight: 600;
+    user-select: none;
+    padding: 2px 0;
+}
+.src-more > summary::-webkit-details-marker { display: none; }
+.src-more > summary::before {
+    content: "▸";
+    font-size: 10px;
+    transition: transform 0.15s ease;
+}
+.src-more[open] > summary::before { transform: rotate(90deg); }
+.src-more > summary:hover { color: var(--brand); }
+.src-more-list {
+    list-style: none;
+    margin: 6px 0 0;
+    padding: 8px 0 4px;
+    border-top: 1px dashed var(--border-soft);
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+.src-more-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    line-height: 1.45;
+}
+.src-more-title { flex: 1; min-width: 0; color: var(--text-3); }
+.src-more-title a { color: var(--text-3); }
+.src-more-title a:hover { color: var(--brand); }
 .row-time {
     margin-left: auto;
     font-size: 11px;
@@ -855,9 +905,75 @@ def _extract_hour(item: Dict) -> Optional[int]:
     return None
 
 
+# ====== 相似新闻聚类 ======
+
+def _norm_title(t: str) -> str:
+    """归一化标题：仅保留中日韩文字与字母数字，小写。"""
+    if not t:
+        return ""
+    keep = []
+    for ch in t:
+        if ch.isalnum() or "一" <= ch <= "鿿":
+            keep.append(ch.lower())
+    return "".join(keep)
+
+
+def _bigrams(s: str) -> set:
+    if len(s) < 2:
+        return {s} if s else set()
+    return {s[i:i + 2] for i in range(len(s) - 1)}
+
+
+def _similar(a: str, b: str) -> bool:
+    """同一事件判定：字符二元组 Jaccard 或包含关系。"""
+    if not a or not b:
+        return False
+    if a == b:
+        return True
+    short, lng = (a, b) if len(a) <= len(b) else (b, a)
+    # 短标题被长标题包含（且不太短、长度差不悬殊）—— 多为同事件不同措辞
+    if len(short) >= 4 and short in lng and len(short) / len(lng) >= 0.55:
+        return True
+    ga, gb = _bigrams(a), _bigrams(b)
+    if not ga or not gb:
+        return False
+    inter = len(ga & gb)
+    union = len(ga | gb)
+    return union > 0 and inter / union >= 0.5
+
+
+def _cluster_items(items: List[Dict]) -> List[Dict]:
+    """把同一事件的多条（跨平台/措辞略异）合并为一簇。
+
+    items 已按排名排序，故每簇首条 = 排名最高者 = 代表。
+    返回 [{"rep": item, "members": [item, ...]}]。
+    """
+    clusters: List[Dict] = []
+    for it in items:
+        norm = _norm_title(it.get("title", ""))
+        placed = False
+        for c in clusters:
+            if _similar(norm, c["_norm"]):
+                # 同源同标题已在 _deduplicate 合并过；这里跳过完全同源重复
+                if not any(
+                    m.get("source_name") == it.get("source_name")
+                    and m.get("title") == it.get("title")
+                    for m in c["members"]
+                ):
+                    c["members"].append(it)
+                placed = True
+                break
+        if not placed:
+            clusters.append({"rep": it, "members": [it], "_norm": norm})
+    return clusters
+
+
 # ====== 渲染 ======
 
-def _render_feed_item(item: Dict, tags: List[str], source_type: str, idx: int) -> str:
+def _render_feed_item(
+    item: Dict, tags: List[str], source_type: str, idx: int,
+    members: Optional[List[Dict]] = None,
+) -> str:
     title = html_escape(item.get("title", ""))
     url = item.get("mobile_url") or item.get("url", "")
     source_name = item.get("source_name", "")
@@ -894,6 +1010,9 @@ def _render_feed_item(item: Dict, tags: List[str], source_type: str, idx: int) -
         parts.append(f'<span class="cat-tag">{html_escape(cat_text)}</span>')
     if is_new:
         parts.append('<span class="new-tag">NEW</span>')
+    src_n = len(members) if members else 1
+    if src_n > 1:
+        parts.append(f'<span class="multi-tag">📰 {src_n} 个来源</span>')
     if count > 1:
         parts.append(f'<span class="repeat-tag">×{count}</span>')
     if time_short:
@@ -908,6 +1027,32 @@ def _render_feed_item(item: Dict, tags: List[str], source_type: str, idx: int) -
     preview_cls = "row-preview" if preview else "row-preview empty"
     preview_html = html_escape(preview) if preview else ""
 
+    # 多来源：可折叠的来源清单（原生 <details>，无需 JS）
+    sources_html = ""
+    if members and len(members) > 1:
+        rows = []
+        for m in members:
+            m_name = m.get("source_name", "") or ""
+            m_url = m.get("mobile_url") or m.get("url", "")
+            m_title = html_escape(m.get("title", ""))
+            m_color = _src_color(m_name)
+            m_chip = (
+                f'<span class="src-chip" style="color:{m_color};'
+                f'border-color:{_hex_with_alpha(m_color, "40")};'
+                f'background:{_hex_with_alpha(m_color, "0d")};">'
+                f'<span class="src-chip-dot" style="background:{m_color};"></span>'
+                f'{html_escape(m_name)}</span>'
+            )
+            if m_url:
+                m_link = f'<a href="{html_escape(m_url)}" target="_blank" rel="noopener">{m_title}</a>'
+            else:
+                m_link = m_title
+            rows.append(f'<li>{m_chip}<span class="src-more-title">{m_link}</span></li>')
+        sources_html = (
+            f'<details class="src-more"><summary>展开 {len(members)} 家来源报道</summary>'
+            f'<ul class="src-more-list">{"".join(rows)}</ul></details>'
+        )
+
     first_cls = " is-first" if idx == 0 else ""
     tags_data = html_escape("|".join(tags))
 
@@ -918,6 +1063,7 @@ def _render_feed_item(item: Dict, tags: List[str], source_type: str, idx: int) -
             <div class="row-meta-top">{meta_top_html}</div>
             <h3 class="row-title">{title_html}</h3>
             <p class="{preview_cls}">{preview_html}</p>
+            {sources_html}
             <div class="row-meta-bot">
                 <div class="heat-wrap">
                     <div class="heat-bar"><div class="heat-fill {rank_cls}" style="width:{heat_pct:.1f}%;"></div></div>
@@ -986,16 +1132,33 @@ def render_html_content(
     rss_cards_sorted = sorted(rss_cards, key=sort_key)
     all_items = hot_cards_sorted + rss_cards_sorted
 
-    # 重新计算 rank（合并后的 1-based 全局排名）
-    for i, it in enumerate(all_items, start=1):
-        it["_global_rank"] = i
+    # 同一事件跨平台/措辞略异的多条 → 合并为一簇（代表 = 簇内排名最高者）
+    clusters = _cluster_items(all_items)
 
-    # 渲染每条 row（rank 用全局位置）
+    # 重新计算 rank（合并后的 1-based 全局排名，按簇）
+    for i, c in enumerate(clusters, start=1):
+        c["rep"]["_global_rank"] = i
+
+    # 渲染每簇一张卡（rank 用全局位置；标签 = 簇内并集，便于分类过滤）
     card_parts = []
-    for idx, item in enumerate(all_items):
-        item_copy = dict(item)
-        item_copy["ranks"] = [item["_global_rank"]]
-        card_parts.append(_render_feed_item(item_copy, item.get("_tags", []), item.get("_source_type", "hotlist"), idx))
+    for idx, c in enumerate(clusters):
+        rep = c["rep"]
+        members = c["members"]
+        item_copy = dict(rep)
+        item_copy["ranks"] = [rep["_global_rank"]]
+        item_copy["is_new"] = any(m.get("is_new") for m in members)
+        union_tags: List[str] = []
+        for m in members:
+            for t in m.get("_tags", []) or []:
+                if t not in union_tags:
+                    union_tags.append(t)
+        card_parts.append(
+            _render_feed_item(
+                item_copy, union_tags,
+                rep.get("_source_type", "hotlist"), idx,
+                members=members,
+            )
+        )
     feed_html = "".join(card_parts) or '<div class="empty-state">暂无内容</div>'
 
     # NEW 数量
