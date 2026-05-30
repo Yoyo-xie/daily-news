@@ -222,7 +222,7 @@ filter:
 # - 模型配置统一在下方 ai 段
 # ===============================================================
 ai_filter:
-  batch_size: 200                         # 每批发送给 AI 的标题数（控制单次 API 调用量）
+  batch_size: 60                          # 每批发送给 AI 的标题数（控制单次 API 调用量）
                                           # 新闻超过此数量时自动分批处理
   batch_interval: 2                       # 分批处理时，每批之间的等待时间（秒）
                                           # 避免频繁调用 API 触发限流，设为 0 则不等待
@@ -453,7 +453,7 @@ ai:
                                     #    (原理：前缀 openai/ 强制 LiteLLM 使用 OpenAI 协议格式进行通信)
 
 
-  timeout: 120                      # 请求超时（秒）
+  timeout: 180                      # 请求超时（秒）
 
   temperature: 1.0                  # 采样温度 (0.0-2.0)
                                     # 注意：部分模型(如 gpt-5)可能要求必须为 1.0，否则会报错
@@ -461,7 +461,7 @@ ai:
   max_tokens: 5000                  # 最大生成 token 数
                                     # 注意：如果 API 不支持此参数(报 HTTP 400)，请设为 0 以禁用发送
   # 高级选项
-  num_retries: 1                    # 失败重试次数
+  num_retries: 2                    # 失败重试次数
   fallback_models: []               # 备用模型列表（可选）
                                     # 示例: ["openai/gpt-4o-mini", "openai/deepseek-ai/DeepSeek-V3"]
 
