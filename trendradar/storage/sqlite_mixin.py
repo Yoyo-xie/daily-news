@@ -835,31 +835,33 @@ class SQLiteStorageMixin:
                                         published_at = ?,
                                         summary = ?,
                                         author = ?,
+                                        image_url = ?,
                                         last_crawl_time = ?,
                                         crawl_count = crawl_count + 1,
                                         updated_at = ?
                                     WHERE id = ?
                                 """, (item.title, item.published_at, item.summary,
-                                      item.author, data.crawl_time, now_str, existing_id))
+                                      item.author, item.image_url, data.crawl_time, now_str, existing_id))
                                 updated_count += 1
                             else:
                                 # 不存在，插入新记录（使用 ON CONFLICT 兜底处理并发/竞争场景）
                                 cursor.execute("""
                                     INSERT INTO rss_items
-                                    (title, feed_id, url, published_at, summary, author,
+                                    (title, feed_id, url, published_at, summary, author, image_url,
                                      first_crawl_time, last_crawl_time, crawl_count,
                                      created_at, updated_at)
-                                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, 1, ?, ?)
+                                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?, ?)
                                     ON CONFLICT(url, feed_id) DO UPDATE SET
                                         title = excluded.title,
                                         published_at = excluded.published_at,
                                         summary = excluded.summary,
                                         author = excluded.author,
+                                        image_url = excluded.image_url,
                                         last_crawl_time = excluded.last_crawl_time,
                                         crawl_count = crawl_count + 1,
                                         updated_at = excluded.updated_at
                                 """, (item.title, feed_id, item.url, item.published_at,
-                                      item.summary, item.author, data.crawl_time,
+                                      item.summary, item.author, item.image_url, data.crawl_time,
                                       data.crawl_time, now_str, now_str))
                                 new_count += 1
                         else:
@@ -867,12 +869,12 @@ class SQLiteStorageMixin:
                             try:
                                 cursor.execute("""
                                     INSERT INTO rss_items
-                                    (title, feed_id, url, published_at, summary, author,
+                                    (title, feed_id, url, published_at, summary, author, image_url,
                                      first_crawl_time, last_crawl_time, crawl_count,
                                      created_at, updated_at)
-                                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, 1, ?, ?)
+                                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?, ?)
                                 """, (item.title, feed_id, "", item.published_at,
-                                      item.summary, item.author, data.crawl_time,
+                                      item.summary, item.author, item.image_url, data.crawl_time,
                                       data.crawl_time, now_str, now_str))
                                 new_count += 1
                             except sqlite3.IntegrityError:
@@ -946,7 +948,8 @@ class SQLiteStorageMixin:
             cursor.execute("""
                 SELECT i.id, i.title, i.feed_id, f.name as feed_name,
                        i.url, i.published_at, i.summary, i.author,
-                       i.first_crawl_time, i.last_crawl_time, i.crawl_count
+                       i.first_crawl_time, i.last_crawl_time, i.crawl_count,
+                       i.image_url
                 FROM rss_items i
                 LEFT JOIN rss_feeds f ON i.feed_id = f.id
                 ORDER BY i.published_at DESC
@@ -981,6 +984,7 @@ class SQLiteStorageMixin:
                     first_time=row[8],
                     last_time=row[9],
                     count=row[10],
+                    image_url=row[11] or "",
                 ))
 
             # 获取最新的抓取时间
@@ -1101,7 +1105,8 @@ class SQLiteStorageMixin:
             cursor.execute("""
                 SELECT i.id, i.title, i.feed_id, f.name as feed_name,
                        i.url, i.published_at, i.summary, i.author,
-                       i.first_crawl_time, i.last_crawl_time, i.crawl_count
+                       i.first_crawl_time, i.last_crawl_time, i.crawl_count,
+                       i.image_url
                 FROM rss_items i
                 LEFT JOIN rss_feeds f ON i.feed_id = f.id
                 WHERE i.last_crawl_time = ?
@@ -1137,6 +1142,7 @@ class SQLiteStorageMixin:
                     first_time=row[8],
                     last_time=row[9],
                     count=row[10],
+                    image_url=row[11] or "",
                 ))
 
             # 获取失败的源（针对最新一次抓取）
@@ -1630,7 +1636,7 @@ class SQLiteStorageMixin:
                     placeholders = ",".join("?" * len(rss_ids))
                     rss_cursor.execute(f"""
                         SELECT i.id, i.title, i.feed_id, f.name as feed_name,
-                               i.url, i.published_at
+                               i.url, i.published_at, i.image_url
                         FROM rss_items i
                         LEFT JOIN rss_feeds f ON i.feed_id = f.id
                         WHERE i.id IN ({placeholders})
@@ -1655,6 +1661,7 @@ class SQLiteStorageMixin:
                                 "source_name": info[3] or info[2],
                                 "url": info[4] or "",
                                 "mobile_url": "",
+                                "image_url": info[6] or "",
                                 "rank": 0,
                                 "ranks": [],
                                 "first_time": info[5] or "",

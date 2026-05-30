@@ -434,6 +434,43 @@ button { font-family: inherit; }
 }
 .row-preview.empty { display: none; }
 
+/* 卡片配图 / 视频封面 */
+.row-media {
+    display: block;
+    position: relative;
+    margin: 2px 0 10px;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    background: var(--bg-soft);
+    max-width: 480px;
+    line-height: 0;
+}
+.row-media img {
+    width: 100%;
+    height: auto;
+    max-height: 260px;
+    object-fit: cover;
+    display: block;
+    transition: transform 300ms ease;
+}
+.row-media:hover img { transform: scale(1.03); }
+.row-media-play {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 52px; height: 52px;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.55);
+    color: #fff;
+    font-size: 20px;
+    display: flex; align-items: center; justify-content: center;
+    padding-left: 3px;
+    backdrop-filter: blur(2px);
+    transition: background 200ms ease;
+}
+.row-media.is-video:hover .row-media-play { background: rgba(0, 0, 0, 0.72); }
+
 .row-meta-bot { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
 .heat-wrap { display: flex; align-items: center; gap: 8px; flex: 1; max-width: 340px; min-width: 140px; }
 .heat-bar  { flex: 1; height: 4px; background: var(--bg-soft); border-radius: 99px; overflow: hidden; }
@@ -1053,6 +1090,20 @@ def _render_feed_item(
             f'<ul class="src-more-list">{"".join(rows)}</ul></details>'
         )
 
+    # 配图 / 视频封面（仅当抓到 og:image 时渲染；加载失败自动隐藏）
+    media_html = ""
+    img_url = item.get("image_url", "") or ""
+    if img_url and url:
+        is_video = bool(item.get("is_video"))
+        vid_cls = " is-video" if is_video else ""
+        play_html = '<span class="row-media-play">▶</span>' if is_video else ""
+        media_html = (
+            f'<a class="row-media{vid_cls}" href="{html_escape(url)}" target="_blank" rel="noopener">'
+            f'<img loading="lazy" src="{html_escape(img_url)}" alt="" '
+            f'onerror="this.closest(\'.row-media\').style.display=\'none\'">'
+            f'{play_html}</a>'
+        )
+
     first_cls = " is-first" if idx == 0 else ""
     tags_data = html_escape("|".join(tags))
 
@@ -1063,6 +1114,7 @@ def _render_feed_item(
             <div class="row-meta-top">{meta_top_html}</div>
             <h3 class="row-title">{title_html}</h3>
             <p class="{preview_cls}">{preview_html}</p>
+            {media_html}
             {sources_html}
             <div class="row-meta-bot">
                 <div class="heat-wrap">

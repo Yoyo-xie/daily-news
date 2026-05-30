@@ -93,6 +93,17 @@ def _load_report_config(config_data: Dict) -> Dict:
     }
 
 
+def _load_media_config(config_data: Dict) -> Dict:
+    """加载卡片配图（og:image 抓取）配置"""
+    media = config_data.get("media", {})
+    return {
+        "ENABLED": media.get("enabled", True),
+        "TIMEOUT": media.get("timeout", 6),
+        "MAX_WORKERS": media.get("max_workers", 8),
+        "MAX_ITEMS": media.get("max_items", 60),
+    }
+
+
 def _load_notification_config(config_data: Dict) -> Dict:
     """加载通知配置"""
     notification = config_data.get("notification", {})
@@ -561,6 +572,9 @@ def load_config(config_path: Optional[str] = None) -> Dict[str, Any]:
 
     # 报告配置
     config.update(_load_report_config(config_data))
+
+    # 卡片配图配置
+    config["MEDIA"] = _load_media_config(config_data)
 
     # 通知配置
     config.update(_load_notification_config(config_data))

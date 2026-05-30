@@ -887,6 +887,23 @@ class NewsAnalyzer:
         # HTML生成（如果启用）— 使用翻译后的数据
         html_file = None
         if self.ctx.config["STORAGE"]["FORMATS"]["HTML"]:
+            # 为筛选后的条目补抓封面图（og:image）——只对进入展示的少量条目抓
+            media_cfg = self.ctx.config.get("MEDIA", {})
+            if media_cfg.get("ENABLED", True):
+                try:
+                    from trendradar.enrich_media import enrich_groups_with_images
+                    groups = list(stats or [])
+                    if rss_items:
+                        groups += list(rss_items)
+                    enrich_groups_with_images(
+                        groups,
+                        max_items=media_cfg.get("MAX_ITEMS", 60),
+                        timeout=media_cfg.get("TIMEOUT", 6),
+                        max_workers=media_cfg.get("MAX_WORKERS", 8),
+                    )
+                except Exception as e:
+                    print(f"[配图] 跳过（异常）：{e}")
+
             html_file = self.ctx.generate_html(
                 stats,
                 total_titles,
@@ -1414,6 +1431,7 @@ class NewsAnalyzer:
                     "published_at": item.published_at,
                     "summary": item.summary,
                     "author": item.author,
+                    "image_url": item.image_url,
                 })
 
         # 输出过滤统计

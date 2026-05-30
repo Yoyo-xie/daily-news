@@ -30,6 +30,7 @@ class ParsedRSSItem:
     summary: Optional[str] = None
     author: Optional[str] = None
     guid: Optional[str] = None
+    image: Optional[str] = None      # 封面图（media:content / enclosure / 正文内联 img）
 
 
 class RSSParser:
@@ -168,6 +169,15 @@ class RSSParser:
         # GUID
         guid = item_data.get("id", "") or url
 
+        # 封面图：JSON Feed 的 image / banner_image，否则正文内联 img
+        image = item_data.get("image") or item_data.get("banner_image")
+        if not image:
+            content_html = item_data.get("content_html", "")
+            if content_html:
+                m = re.search(r'<img[^>]+src=["\']([^"\']+)["\']', content_html, re.I)
+                if m:
+                    image = html.unescape(m.group(1).strip())
+
         return ParsedRSSItem(
             title=title,
             url=url,
@@ -175,6 +185,7 @@ class RSSParser:
             summary=summary or None,
             author=author,
             guid=guid,
+            image=image or None,
         )
 
     def _parse_iso_date(self, date_str: str) -> Optional[str]:
@@ -234,6 +245,7 @@ class RSSParser:
         summary = self._parse_summary(entry)
         author = self._parse_author(entry)
         guid = entry.get("id") or entry.get("guid", {}).get("value") or url
+        image = self._parse_image(entry)
 
         return ParsedRSSItem(
             title=title,
@@ -242,6 +254,7 @@ class RSSParser:
             summary=summary,
             author=author,
             guid=guid,
+            image=image,
         )
 
     def _clean_text(self, text: str) -> str:
@@ -310,6 +323,45 @@ class RSSParser:
             summary = summary[:self.max_summary_length] + "..."
 
         return summary
+
+    def _parse_image(self, entry: Any) -> Optional[str]:
+        """从 RSS/Atom 条目提取封面图。
+
+        优先级：media:content/thumbnail → enclosure/link(image) → 正文内联首张 <img>。
+        正文要在清洗前取（_clean_text 会剥掉 <img>），故直接读原始 content/summary。
+        """
+        # 1) media:content / media:thumbnail（feedparser 解析为 media_content / media_thumbnail）
+        for key in ("media_content", "media_thumbnail"):
+            media = entry.get(key)
+            if media and isinstance(media, list):
+                for mo in media:
+                    u = mo.get("url")
+                    medium = (mo.get("medium") or mo.get("type") or "").lower()
+                    if u and ("image" in medium or not medium):
+                        return u
+
+        # 2) enclosure / link(rel=enclosure, type=image)
+        for link in entry.get("links", []) or []:
+            if link.get("rel") == "enclosure" and "image" in (link.get("type") or "").lower():
+                if link.get("href"):
+                    return link["href"]
+        for enc in entry.get("enclosures", []) or []:
+            if "image" in (enc.get("type") or "").lower() and enc.get("href"):
+                return enc["href"]
+
+        # 3) 正文/摘要里的第一张 <img>（取原始 HTML）
+        raw = ""
+        content = entry.get("content")
+        if content and isinstance(content, list):
+            raw = content[0].get("value", "") or ""
+        if not raw:
+            raw = entry.get("summary") or entry.get("description", "") or ""
+        if raw:
+            m = re.search(r'<img[^>]+src=["\']([^"\']+)["\']', raw, re.I)
+            if m:
+                return html.unescape(m.group(1).strip())
+
+        return None
 
     def _parse_author(self, entry: Any) -> Optional[str]:
         """解析作者"""
